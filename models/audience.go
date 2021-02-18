@@ -11,15 +11,15 @@ import (
 	"github.com/websublime/courier/storage/namespace"
 )
 
-type Channels []Channel
+type Topics []Topic
 
 type Audience struct {
 	ID        uuid.UUID  `json:"id" db:"id"`
 	Name      string     `json:"name" db:"name"`
-	Channels  Channels   `json:"channels" has_many:"channels"`
+	Topics    Topics     `json:"topics,omitempty" has_many:"topics"`
 	CreatedAt time.Time  `json:"createdAt" db:"created_at"`
 	UpdatedAt time.Time  `json:"updatedAt" db:"updated_at"`
-	DeletedAt nulls.Time `json:"deleteadAt,omitempty" db:"deleted_at"`
+	DeletedAt nulls.Time `json:"deletedAt,omitempty" db:"deleted_at"`
 }
 
 func (Audience) TableName() string {
