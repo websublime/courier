@@ -4,7 +4,9 @@ go 1.15
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/gobuffalo/pop v4.13.1+incompatible
 	github.com/gobuffalo/pop/v5 v5.3.3
+	github.com/gobuffalo/uuid v2.0.5+incompatible
 	github.com/gofiber/fiber/v2 v2.3.3
 	github.com/gofiber/websocket/v2 v2.0.2
 	github.com/lib/pq v1.9.0

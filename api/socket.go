@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/websocket/v2"
 )
 
-func (api *API) GetMessage(ctx *websocket.Conn) {
+func (api *API) SocketHandler(ctx *websocket.Conn) {
 	var (
 		mt  int
 		msg []byte

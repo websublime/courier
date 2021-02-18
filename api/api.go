@@ -21,7 +21,7 @@ func WithVersion(app *fiber.App, conf *config.EnvironmentConfig, db *storage.Con
 		app:    app,
 	}
 
-	router := app.Group("/v1")
+	router := app.Group("/v1", api.AuthorizedMiddleware)
 	socketRouter := app.Group("/ws")
 
 	NewAPI(api, router)
@@ -29,13 +29,11 @@ func WithVersion(app *fiber.App, conf *config.EnvironmentConfig, db *storage.Con
 }
 
 func NewAPI(api *API, router fiber.Router) {
-	router.Use(api.AuthorizedMiddleware)
-
 	router.Get("sign", api.GetSignedUrl)
+	router.Post("channel", api.CreateNewChannel)
 }
 
 func NewSocketAPI(api *API, router fiber.Router) {
-
 	router.Use(func(ctx *fiber.Ctx) error {
 		query := ctx.Query("token")
 		param := utils.Decrypt([]byte(api.config.CourierKeySecret), query)
@@ -52,5 +50,5 @@ func NewSocketAPI(api *API, router fiber.Router) {
 
 		return fiber.ErrUpgradeRequired
 	})
-	router.Get("", websocket.New(api.GetMessage))
+	router.Get("", websocket.New(api.SocketHandler))
 }

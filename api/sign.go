@@ -5,11 +5,31 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
+	"github.com/websublime/courier/models"
+	"github.com/websublime/courier/storage"
 	"github.com/websublime/courier/utils"
 )
 
 func (api *API) GetSignedUrl(ctx *fiber.Ctx) error {
 	token := ctx.Locals("token").(*jwt.Token)
+	claimer := token.Claims.(*utils.TrueClaims)
+
+	aud, err := models.FindAudience(api.db, claimer.Audience)
+	if err != nil {
+		aud, err = models.NewAudience(claimer.Audience)
+		if err != nil {
+			return utils.NewException(utils.ErrorServerUnknown, fiber.StatusBadRequest, err.Error())
+		}
+
+		err = api.db.Transaction(func(tx *storage.Connection) error {
+			terr := tx.Create(aud)
+
+			return terr
+		})
+		if err != nil {
+			return utils.NewException(utils.ErrorAudienceCreate, fiber.StatusBadRequest, err.Error())
+		}
+	}
 
 	u, err := url.Parse(api.config.CourierURL)
 	if err != nil {

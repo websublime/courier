@@ -19,10 +19,14 @@ type TrueClaims struct {
 }
 
 const (
-	ErrorServerUnknown   = "ESERVER_UNKNOWN"
-	ErrorStatusForbidden = "ESTATUS_FORBIDDEN"
-	ErrorInvalidToken    = "ETOKEN_INVALID"
-	ErrorEncryptFailure  = "ECRYPT_FAILURE"
+	ErrorServerUnknown    = "ESERVER_UNKNOWN"
+	ErrorBodyParse        = "EBODY_PARSER"
+	ErrorStatusForbidden  = "ESTATUS_FORBIDDEN"
+	ErrorInvalidToken     = "ETOKEN_INVALID"
+	ErrorEncryptFailure   = "ECRYPT_FAILURE"
+	ErrorAudienceCreate   = "EAUD_CREATEFAILURE"
+	ErrorAudienceNotFound = "EAUD_NOTFOUND"
+	ErrorChannelCreation  = "ECHANNEL_CREATEFAILURE"
 )
 
 // Contains checks if a string is present in a slice
