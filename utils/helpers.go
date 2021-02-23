@@ -12,14 +12,22 @@ import (
 )
 
 const (
-	ErrorServerUnknown    = "ESERVER_UNKNOWN"
-	ErrorBodyParse        = "EBODY_PARSER"
-	ErrorStatusForbidden  = "ESTATUS_FORBIDDEN"
-	ErrorInvalidToken     = "ETOKEN_INVALID"
-	ErrorEncryptFailure   = "ECRYPT_FAILURE"
-	ErrorAudienceCreate   = "EAUD_CREATEFAILURE"
-	ErrorAudienceNotFound = "EAUD_NOTFOUND"
-	ErrorChannelCreation  = "ECHANNEL_CREATEFAILURE"
+	ErrorServerUnknown           = "ESERVER_UNKNOWN"
+	ErrorBodyParse               = "EBODY_PARSER"
+	ErrorStatusForbidden         = "ESTATUS_FORBIDDEN"
+	ErrorInvalidToken            = "ETOKEN_INVALID"
+	ErrorEncryptFailure          = "ECRYPT_FAILURE"
+	ErrorAudienceCreate          = "EAUD_CREATEFAILURE"
+	ErrorAudienceNotFound        = "EAUD_NOTFOUND"
+	ErrorChannelCreation         = "ECHANNEL_CREATEFAILURE"
+	ErrorHookInvalid             = "EHOOK_INVALID"
+	ErrorTopicsEmpty             = "ETOPICS_EMPTY"
+	ErrorTopicsInvalid           = "ETOPICS_INVALID"
+	ErrorTopicUnknown            = "ETOPICS_UNKNOWN"
+	ErrorTopicNotFound           = "ETOPICS_NOTFOUND"
+	ErrorTopicCreate             = "ETOPICS_CREATE"
+	ErrorSocketConnectionFailure = "ESOCKET_CONNECTIONFAILURE"
+	ErrorSocketMessageFailure    = "ESOCKET_MESSAGEFAILURE"
 )
 
 // Contains checks if a string is present in a slice

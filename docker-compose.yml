@@ -11,6 +11,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_PORT=${POSTGRES_PORT}
+      - JWT_SECRET=${COURIER_JWT_SECRET}
+      - COURIER_URL=${POSTGRES_COURIER_URL}
     volumes:
       - ${DATA_PATH}/database:/var/lib/postgresql/data
       - ${PWD}/database:/docker-entrypoint-initdb.d/
