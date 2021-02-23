@@ -11,13 +11,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-type TrueClaims struct {
-	jwt.StandardClaims
-	Email        string                 `json:"email"`
-	AppMetaData  map[string]interface{} `json:"app_metadata"`
-	UserMetaData map[string]interface{} `json:"user_metadata"`
-}
-
 const (
 	ErrorServerUnknown    = "ESERVER_UNKNOWN"
 	ErrorBodyParse        = "EBODY_PARSER"
@@ -91,7 +84,7 @@ func Decrypt(key []byte, cryptoText string) string {
 func ParseJwtToken(tokenString string, secret string) (*jwt.Token, error) {
 	parser := jwt.Parser{ValidMethods: []string{jwt.SigningMethodHS256.Name}}
 
-	token, err := parser.ParseWithClaims(tokenString, &TrueClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err := parser.ParseWithClaims(tokenString, &GoTrueClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secret), nil
 	})
 

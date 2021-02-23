@@ -12,7 +12,11 @@ import (
 
 func (api *API) GetSignedUrl(ctx *fiber.Ctx) error {
 	token := ctx.Locals("token").(*jwt.Token)
-	claimer := token.Claims.(*utils.TrueClaims)
+	claimer, ok := token.Claims.(*utils.GoTrueClaims)
+
+	if !ok {
+		return utils.NewException(utils.ErrorServerUnknown, fiber.StatusBadRequest, "Your token is not valid")
+	}
 
 	aud, err := models.FindAudience(api.db, claimer.Audience)
 	if err != nil {
