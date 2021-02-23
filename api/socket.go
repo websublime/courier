@@ -7,6 +7,8 @@ import (
 
 	"github.com/gofiber/websocket/v2"
 	"github.com/gofrs/uuid"
+	"github.com/websublime/courier/models"
+	"github.com/websublime/courier/storage"
 	"github.com/websublime/courier/utils"
 )
 
@@ -50,6 +52,7 @@ func (api *API) HandleReceivedMessage(ctx *websocket.Conn) {
 		switch message.Action {
 		case PUBLISH:
 			api.Publish(ctx, message.Topic, message.Message)
+			api.SaveMessage(ctx, message.Topic, message.Message)
 			log.Println("publisged to", message.Topic)
 			break
 		case SUBSCRIBE:
@@ -73,12 +76,13 @@ func (api *API) HandleReceivedMessage(ctx *websocket.Conn) {
 
 func (api *API) Subscribe(ctx *websocket.Conn, topic string) {
 	uid, _ := uuid.FromString(fmt.Sprintf("%s", ctx.Locals("requestid")))
+	audience := ctx.Locals("audience").(*models.Audience)
 
 	var client Client
 	var subscriptionList []Subscription
 
 	for _, cl := range api.clients {
-		if cl.ID == uid {
+		if cl.ID == uid && cl.Audience.ID == audience.ID {
 			client = cl
 		}
 	}
@@ -99,11 +103,12 @@ func (api *API) Subscribe(ctx *websocket.Conn, topic string) {
 
 func (api *API) Unsubscribe(ctx *websocket.Conn, topic string) {
 	uid, _ := uuid.FromString(fmt.Sprintf("%s", ctx.Locals("requestid")))
+	audience := ctx.Locals("audience").(*models.Audience)
 
 	var client Client
 
 	for _, cl := range api.clients {
-		if cl.ID == uid {
+		if cl.ID == uid && cl.Audience.ID == audience.ID {
 			client = cl
 		}
 	}
@@ -116,10 +121,11 @@ func (api *API) Unsubscribe(ctx *websocket.Conn, topic string) {
 }
 
 func (api *API) Publish(ctx *websocket.Conn, topic string, message json.RawMessage) {
+	audience := ctx.Locals("audience").(*models.Audience)
 	var subscriptionList []Subscription
 
 	for _, subscription := range api.subscriptions {
-		if subscription.Topic == topic {
+		if subscription.Topic == topic && subscription.Client.Audience.ID == audience.ID {
 			subscriptionList = append(subscriptionList, subscription)
 		}
 	}
@@ -132,9 +138,35 @@ func (api *API) Publish(ctx *websocket.Conn, topic string, message json.RawMessa
 }
 
 func (api *API) Broadcast(ctx *websocket.Conn, message json.RawMessage) {
-	for _, subscription := range api.subscriptions {
-		msg, _ := message.MarshalJSON()
+	audience := ctx.Locals("audience").(*models.Audience)
 
-		subscription.Client.Connection.WriteMessage(1, msg)
+	for _, subscription := range api.subscriptions {
+		if subscription.Client.Audience.ID == audience.ID {
+			msg, _ := message.MarshalJSON()
+
+			subscription.Client.Connection.WriteMessage(1, msg)
+		}
 	}
+}
+
+func (api *API) SaveMessage(ctx *websocket.Conn, topicName string, message json.RawMessage) error {
+	audience := ctx.Locals("audience").(*models.Audience)
+
+	topic, err := models.FindTopicByNameAndAudienceID(api.db, topicName, audience.ID)
+	if err != nil {
+		return err
+	}
+
+	msg, err := models.NewMessage(message, topic.ID)
+	if err != nil {
+		return err
+	}
+
+	err = api.db.Transaction(func(tx *storage.Connection) error {
+		terr := tx.Create(msg)
+
+		return terr
+	})
+
+	return err
 }
