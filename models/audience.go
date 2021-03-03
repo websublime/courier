@@ -50,7 +50,7 @@ func FindAudience(tx *storage.Connection, name string) (*Audience, error) {
 	aud := &Audience{}
 	if err := tx.Where("name = ?", name).First(aud); err != nil {
 		if errors.Cause(err) == sql.ErrNoRows {
-			return nil, errors.Wrap(err, "Bucket not found")
+			return nil, errors.Wrap(err, "Audience not found")
 		}
 
 		return nil, errors.Wrap(err, err.Error())
