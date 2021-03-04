@@ -37,10 +37,6 @@ CREATE TRIGGER on_topics_handler
   AFTER INSERT OR UPDATE OR DELETE ON "courier".topics 
   FOR EACH ROW EXECUTE PROCEDURE extensions.notify_hook();
 
-CREATE TRIGGER on_messages_handler
-  AFTER INSERT OR UPDATE OR DELETE ON "courier".messages 
-  FOR EACH ROW EXECUTE PROCEDURE extensions.notify_hook();
-
 ALTER TABLE "courier".topics ADD FOREIGN KEY (audience_id) REFERENCES "courier".audiences(id);
 ALTER TABLE "courier".messages ADD FOREIGN KEY (topic_id) REFERENCES "courier".topics(id);
 
