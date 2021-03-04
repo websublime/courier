@@ -17,6 +17,7 @@ type EnvironmentConfig struct {
 	CourierDatabaseNamespace string `env:"COURIER_DATABASE_NAMESPACE" mapstructure:"database_namespace"`
 	CourierJWTSecret         string `env:"COURIER_JWT_SECRET" mapstructure:"jwt_secret"`
 	CourierKeySecret         string `env:"COURIER_KEY_SECRET" mapstructure:"key_secret"`
+	CourierProduction        bool   `env:"COURIER_PRODUCTION" mapstructure:"production"`
 }
 
 // LoadEnvironmentConfig load config from env
@@ -33,6 +34,7 @@ func LoadEnvironmentConfig() *EnvironmentConfig {
 }
 
 func loadDefault(viper *viper.Viper) {
+	viper.SetDefault("COURIER_PRODUCTION", false)
 	viper.SetDefault("COURIER_PORT", "8883")
 	viper.SetDefault("COURIER_HOST", "localhost")
 	viper.SetDefault("COURIER_WS_URL", "http://localhost:8883/v1/ws")
@@ -55,6 +57,7 @@ func loadEnv(viper *viper.Viper) {
 	viper.BindEnv("JWT_SECRET")
 	viper.BindEnv("KEY_SECRET")
 	viper.BindEnv("WS_URL")
+	viper.BindEnv("PRODUCTION")
 
 	loadDefault(viper)
 

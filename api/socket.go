@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/gobuffalo/uuid"
 	"github.com/gofiber/websocket/v2"
-	"github.com/gofrs/uuid"
 	"github.com/websublime/courier/models"
 	"github.com/websublime/courier/storage"
 	"github.com/websublime/courier/utils"

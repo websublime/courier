@@ -14,10 +14,10 @@ import (
 )
 
 // BootApplication initializes fiber application
-func BootApplication() *fiber.App {
+func BootApplication(conf *EnvironmentConfig) *fiber.App {
 	app := fiber.New(fiber.Config{
 		ServerHeader: "courier-storage",
-		Prefork:      false,
+		Prefork:      conf.CourierProduction,
 		ErrorHandler: ErrorHandler,
 	})
 
